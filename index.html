@@ -12,6 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="stylesheet" href="style.css">
+<script src="tema.js"></script>
 <title>TamaTask</title>
 </head>
 <body>
@@ -19,6 +20,7 @@
   <header>
     <canvas id="pet" width="12" height="13" aria-hidden="true"></canvas>
     <h1>Tama<span>Task</span></h1>
+    <button id="tema" type="button" aria-label="Mudar o visual">Tema</button>
   </header>
   <nav id="tabs">
     <button data-tab="nova" class="on">Nova</button>
@@ -27,16 +29,13 @@
   </nav>
 
   <section id="nova">
-    <label>Título
-      <input id="titulo" maxlength="120" autocomplete="off">
-    </label>
-    <label>Descrição
-      <textarea id="detalhes" rows="3" maxlength="1000"></textarea>
+    <label>O que você precisa fazer?
+      <input id="titulo" maxlength="200" autocomplete="off" placeholder="ex: lavar a louça">
     </label>
     <div class="seg" id="dif">
-      <button data-d="0">Fácil</button>
-      <button data-d="1" class="on">Mediana</button>
-      <button data-d="2">Difícil</button>
+      <button data-d="0"><span class="ic-p">&#xE000;</span><span class="ic-e">🌱</span>Fácil</button>
+      <button data-d="1" class="on"><span class="ic-p">&#xE001;</span><span class="ic-e">⚡</span>Mediana</button>
+      <button data-d="2"><span class="ic-p">&#xE002;</span><span class="ic-e">🔥</span>Difícil</button>
     </div>
     <button id="add" class="primary">Adicionar ao backlog</button>
     <p id="ok" class="msg"></p>
@@ -54,13 +53,13 @@
   </section>
 
   <section id="sorteio" hidden>
-    <canvas id="egg" width="16" height="16" aria-label="Ovo: toque para chocar"></canvas>
+    <canvas id="egg" width="16" height="16" aria-label="Ovo: toque para sortear"></canvas>
     <label>Quantas tarefas sortear
       <select id="qtd">
         <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
       </select>
     </label>
-    <button id="sortear" class="primary">Chocar ovo</button>
+    <button id="sortear" class="primary">Sortear</button>
     <p id="aviso" class="msg"></p>
     <ul id="sorteadas"></ul>
   </section>

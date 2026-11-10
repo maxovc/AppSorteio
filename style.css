@@ -1,38 +1,91 @@
 @font-face{font-family:TamaPixel;src:url(pixel.woff) format('woff');font-display:swap}
-:root{--bg:#c4cfa1;--lcd:#d3dcb7;--px:#2b3322;--mut:#5d6b47}
+
+/* ===== VISUAL CLÁSSICO (LCD verde) — edite aqui ===== */
+:root{
+  --bg:#c4cfa1; --lcd:#d3dcb7; --px:#2b3322; --mut:#5d6b47; --pet:#2b3322; --card:rgba(211,220,183,.5);
+  --sel:#2b3322; --seltx:#c4cfa1; --acc:#2b3322; --acctx:#c4cfa1;
+  --d0:#2b3322; --d1:#2b3322; --d2:#2b3322;
+  --r:0; --ri:0; --rb:0; --bw:3px;
+  --sh:4px 4px 0 var(--px); --sh2:3px 3px 0 var(--px); --shs:none; --shp:translate(4px,4px);
+  --font:TamaPixel,"Courier New",monospace; --txt:"Courier New",ui-monospace,monospace; --fs:20px; --fw:400;
+  --bgimg:linear-gradient(rgba(43,51,34,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(43,51,34,.07) 1px,transparent 1px);
+  --bgsize:3px 3px;
+}
+/* ===== VISUAL MODERNO (Tamagotchi colorido) — edite aqui ===== */
+[data-tema="moderno"]{
+  --bg:#f1e8ff; --lcd:#ffffff; --px:#2d2250; --mut:#7a6aa8; --pet:#ff5fa2; --card:#ffffff;
+  --sel:#ffd95a; --seltx:#2d2250; --acc:#ff6fa5; --acctx:#ffffff;
+  --d0:#58d68d; --d1:#ffd95a; --d2:#ff7b5c;
+  --r:24px; --ri:16px; --rb:999px; --bw:3px;
+  --sh:0 5px 0 var(--px); --sh2:0 3px 0 var(--px); --shs:6px 6px 0 var(--px); --shp:translateY(5px);
+  --font:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif; --txt:ui-rounded,"SF Pro Rounded",system-ui,sans-serif; --fs:17px; --fw:700;
+  --bgimg:linear-gradient(160deg,#f1e8ff,#ffe9f4 55%,#e3f6ff); --bgsize:auto;
+}
+
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0}
-body{background-color:var(--bg);background-image:linear-gradient(rgba(43,51,34,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(43,51,34,.07) 1px,transparent 1px);background-size:3px 3px;color:var(--px);font:400 20px/1.25 TamaPixel,"Courier New",monospace;letter-spacing:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+body{min-height:100vh;min-height:100dvh;background-color:var(--bg);background-image:var(--bgimg);background-size:var(--bgsize);color:var(--px);font:var(--fw) var(--fs)/1.25 var(--font);letter-spacing:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 main{max-width:560px;margin:0 auto;padding:16px}
-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+
+header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 #pet{width:60px;height:65px;image-rendering:pixelated;flex:none}
-h1{font:400 40px/1 TamaPixel,monospace;margin:0;text-shadow:4px 4px 0 var(--mut)}
+h1{font:400 40px/1 TamaPixel,monospace;margin:0;color:var(--px);text-shadow:4px 4px 0 var(--mut)}
 h1 span{background:var(--px);color:var(--bg);padding:0 4px 0 6px;margin-left:4px;text-shadow:none}
+[data-tema="moderno"] h1{font:900 34px/1 var(--font);color:var(--acc);text-shadow:3px 3px 0 var(--px)}
+[data-tema="moderno"] h1 span{background:var(--sel);color:var(--px);border:var(--bw) solid var(--px);border-radius:12px;padding:2px 8px;margin-left:6px}
+#tema{margin-left:auto;align-self:flex-start;padding:6px 8px;font-size:10px;box-shadow:var(--sh2)}
+[data-tema="moderno"] #tema{font-size:12px}
+#tema:active{box-shadow:none}
+
 #tabs{display:flex;gap:8px;margin-bottom:16px}
 #tabs button{flex:1;padding:12px 2px}
 #cnt{font-size:10px;margin-left:4px;vertical-align:top}
-button,.btn{font:inherit;color:var(--px);background:var(--lcd);border:3px solid var(--px);border-radius:0;padding:12px;cursor:pointer;box-shadow:4px 4px 0 var(--px);line-height:1.1}
-button:active,.btn:active{transform:translate(4px,4px);box-shadow:none}
-button:disabled{opacity:.5;box-shadow:none;transform:translate(4px,4px)}
-.on,.primary{background:var(--px)!important;color:var(--bg)!important}
-section{border:3px solid var(--px);background:rgba(211,220,183,.5);padding:16px;display:flex;flex-direction:column;gap:16px}
+[data-tema="moderno"] #cnt{font-size:12px}
+
+button,.btn{font:inherit;color:var(--px);background:var(--lcd);border:var(--bw) solid var(--px);border-radius:var(--rb);padding:12px;cursor:pointer;box-shadow:var(--sh);line-height:1.1}
+button:active,.btn:active{transform:var(--shp);box-shadow:none}
+button:disabled{opacity:.5;box-shadow:none;transform:var(--shp)}
+.on{background:var(--sel)!important;color:var(--seltx)!important}
+.primary{background:var(--acc)!important;color:var(--acctx)!important}
+[data-tema="moderno"] .seg .on[data-d="0"]{background:var(--d0)!important}
+[data-tema="moderno"] .seg .on[data-d="1"]{background:var(--d1)!important}
+[data-tema="moderno"] .seg .on[data-d="2"]{background:var(--d2)!important}
+
+section{border:var(--bw) solid var(--px);border-radius:var(--r);background:var(--card);box-shadow:var(--shs);padding:16px;display:flex;flex-direction:column;gap:16px}
 label{display:flex;flex-direction:column;gap:6px}
-input,textarea,select{font:16px/1.35 "Courier New",ui-monospace,monospace;color:var(--px);background:var(--lcd);border:3px solid var(--px);border-radius:0;padding:10px;width:100%}
-input:focus,textarea:focus,select:focus,button:focus-visible{outline:3px dashed var(--px);outline-offset:2px}
-.seg{display:flex;gap:8px}.seg button{flex:1;padding:12px 2px}
+input,textarea,select{font:16px/1.35 var(--txt);color:var(--px);background:var(--lcd);border:var(--bw) solid var(--px);border-radius:var(--ri);padding:12px;width:100%}
+input:focus,select:focus,button:focus-visible{outline:3px dashed var(--px);outline-offset:2px}
+
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px 2px;display:flex;flex-direction:column;align-items:center;gap:6px}
+
 ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
-.item{display:flex;gap:12px;align-items:center;justify-content:space-between;border:3px solid var(--px);background:var(--lcd);padding:12px}
-.d0{border-left-width:6px}.d1{border-left-width:12px}.d2{border-left-width:18px}
+.item{display:flex;gap:12px;align-items:center;justify-content:space-between;border:var(--bw) solid var(--px);border-radius:var(--ri);background:var(--lcd);padding:12px}
+.d0{border-left-width:6px;border-left-color:var(--d0)}
+.d1{border-left-width:12px;border-left-color:var(--d1)}
+.d2{border-left-width:18px;border-left-color:var(--d2)}
+[data-tema="moderno"] .item{border-left-width:12px}
 .info{min-width:0;display:flex;flex-direction:column;gap:6px}
-.info strong,.info p,.info small{display:block;margin:0;font-weight:400;overflow-wrap:anywhere}
-.info p{font:15px/1.35 "Courier New",ui-monospace,monospace}
+.info strong,.info small{display:block;margin:0;font-weight:var(--fw);overflow-wrap:anywhere}
 .info small{color:var(--mut);font-size:10px;letter-spacing:.1em}
-.acoes button{padding:8px 10px;box-shadow:3px 3px 0 var(--px)}
+[data-tema="moderno"] .info small{font-size:13px;letter-spacing:0}
+.acoes button{padding:8px 10px;box-shadow:var(--sh2);white-space:nowrap}
+.acoes button:active{box-shadow:none}
 .row{display:flex;gap:10px}.row>*{flex:1;text-align:center}
 .msg{margin:0;color:var(--mut)}
 .msg:empty{display:none}
-#egg{display:block;margin:0 auto;width:166px;height:166px;image-rendering:pixelated;cursor:pointer;border:3px solid var(--px);background:var(--lcd)}
+
+/* Ícones de dificuldade: pixel no clássico, emoji no moderno */
+.ic-p{display:inline-block;font:400 20px/16px TamaPixel,monospace;margin-right:6px}
+.ic-e{display:none}
+.seg .ic-p{display:block;font-size:30px;line-height:24px;margin:0}
+[data-tema="moderno"] .ic-p{display:none}
+[data-tema="moderno"] .ic-e{display:inline-block;margin-right:4px}
+[data-tema="moderno"] .seg .ic-e{display:block;margin:0;font-size:22px;line-height:1.2}
+
+/* Ovo / sorteio */
+#egg{display:block;margin:0 auto;width:166px;height:166px;image-rendering:pixelated;cursor:pointer;border:var(--bw) solid var(--px);border-radius:var(--r);background:var(--lcd)}
 #egg.flash{background:var(--px)}
 .novo{animation:surge .4s steps(4) both}
 .novo:nth-child(2){animation-delay:.3s}.novo:nth-child(3){animation-delay:.6s}

@@ -1,6 +1,6 @@
 // Network-first: com internet, sempre pega a versão mais nova; sem internet, usa o cache.
-const CACHE = 'tamatask-v3';
-const ARQUIVOS = ['./', 'index.html', 'style.css', 'app.js', 'pet.js', 'egg.js', 'pixel.woff',
+const CACHE = 'tamatask-v4';
+const ARQUIVOS = ['./', 'index.html', 'style.css', 'app.js', 'tema.js', 'pet.js', 'egg.js', 'pixel.woff',
                   'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {

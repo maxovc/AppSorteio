@@ -2,6 +2,8 @@
 
 const KEY = 'sorteio.v1';
 const NOMES = ['Fácil', 'Mediana', 'Difícil'];
+const ICO_PIX = ['\uE000', '\uE001', '\uE002'];   // ícones da fonte pixel
+const ICO_EMO = ['🌱', '⚡', '🔥'];               // visual moderno
 const $ = id => document.getElementById(id);
 
 const novoId = () =>
@@ -15,8 +17,7 @@ function limpar(arr) {
     .filter(t => t && typeof t.titulo === 'string' && t.titulo.trim())
     .map(t => ({
       id: typeof t.id === 'string' && t.id ? t.id.slice(0, 60) : novoId(),
-      titulo: t.titulo.trim().slice(0, 120),
-      detalhes: typeof t.detalhes === 'string' ? t.detalhes.slice(0, 1000) : '',
+      titulo: t.titulo.trim().slice(0, 200),
       dificuldade: [0, 1, 2].includes(t.dificuldade) ? t.dificuldade : 1,
       feita: t.feita === true,
       criadaEm: Number.isFinite(t.criadaEm) ? t.criadaEm : Date.now()
@@ -61,8 +62,9 @@ function item(t, acoes) {
   const li = el('li', 'item d' + t.dificuldade);
   const info = el('div', 'info');
   info.append(el('strong', '', t.titulo));
-  if (t.detalhes) info.append(el('p', '', t.detalhes));
-  info.append(el('small', '', NOMES[t.dificuldade]));
+  const rotulo = el('small');
+  rotulo.append(el('span', 'ic-p', ICO_PIX[t.dificuldade]), el('span', 'ic-e', ICO_EMO[t.dificuldade]), NOMES[t.dificuldade]);
+  info.append(rotulo);
   li.append(info);
   const box = el('div', 'acoes');
   acoes.forEach(a => {
@@ -119,15 +121,13 @@ $('add').addEventListener('click', () => {
   if (!titulo) { $('titulo').focus(); return; }
   tarefas.push({
     id: novoId(),
-    titulo: titulo.slice(0, 120),
-    detalhes: $('detalhes').value.trim().slice(0, 1000),
+    titulo: titulo.slice(0, 200),
     dificuldade: dif,
     feita: false,
     criadaEm: Date.now()
   });
   salvar();
   $('titulo').value = '';
-  $('detalhes').value = '';
   $('ok').textContent = 'Adicionada ao backlog ✓';
   setTimeout(() => { $('ok').textContent = ''; }, 2000);
   renderTudo();
@@ -186,6 +186,8 @@ $('importar').addEventListener('change', async e => {
     alert(novas.length + ' tarefa(s) importada(s).');
   } catch { alert('Arquivo inválido.'); }
 });
+
+$('titulo').addEventListener('keydown', e => { if (e.key === 'Enter') $('add').click(); });
 
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');

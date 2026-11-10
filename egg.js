@@ -4,7 +4,7 @@
   const cv = document.getElementById('egg');
   if (!cv) return;
   const ctx = cv.getContext('2d');
-  const COR = getComputedStyle(document.documentElement).getPropertyValue('--px').trim() || '#2b3322';
+  const cor = () => getComputedStyle(document.documentElement).getPropertyValue('--pet').trim() || '#2b3322';
   const OVO = [
     '...####...', '..######..', '.########.', '.########.', '##########', '###.##.###',
     '##########', '##########', '.##.##.##.', '.########.', '..######..', '...####...'
@@ -13,10 +13,11 @@
   const PET = window.TAMA_SPRITE || [];
   const parado = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let rodando = false;
+  let ultimo = () => ovo(0, 0);   // o que redesenhar ao trocar de tema
 
   const limpar = () => ctx.clearRect(0, 0, 16, 16);
   function pintar(rows, x, y) {
-    ctx.fillStyle = COR;
+    ctx.fillStyle = cor();
     rows.forEach((r, j) => [...r].forEach((c, i) => { if (c === '#') ctx.fillRect(x + i, y + j, 1, 1); }));
   }
   function ovo(dx, rachaduras) {
@@ -32,7 +33,7 @@
       limpar();
       pintar(PET, 2, 3 + quique[k]);
       if (k % 2 === 0) brilhos.forEach(([x, y]) => ctx.fillRect(x, y, 1, 1));
-      if (++k >= quique.length) { clearInterval(t); rodando = false; pronto(); }
+      if (++k >= quique.length) { clearInterval(t); rodando = false; ultimo = () => { limpar(); pintar(PET, 2, 3); }; pronto(); }
     }, 110);
   }
   function piscar(pronto) {
@@ -47,6 +48,7 @@
     if (rodando) return;
     if (parado) { pronto(); return; }
     rodando = true;
+    ultimo = () => ovo(0, 0);
     const dxs = [-1, 1, -1, 1, -1, 1, -1, 1, 0];
     let i = 0;
     const t = setInterval(() => {
@@ -56,5 +58,6 @@
   };
 
   cv.addEventListener('click', () => document.getElementById('sortear').click());
+  window.addEventListener('tema', () => { if (!rodando) ultimo(); });
   ovo(0, 0);
 })();
