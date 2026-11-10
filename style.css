@@ -13,7 +13,7 @@
 }
 /* ===== VISUAL MODERNO (Tamagotchi colorido) — edite aqui ===== */
 [data-tema="moderno"]{
-  --bg:#f1e8ff; --lcd:#ffffff; --px:#2d2250; --mut:#7a6aa8; --pet:#ff5fa2; --card:#ffffff;
+  --bg:#f1e8ff; --lcd:#ffffff; --px:#2d2250; --mut:#7a6aa8; --m-k:#2d2a55; --m-e:#14122b; --m-c:#fff1cf; --m-y:#ffd95a; --m-p:#ff8f8f; /* cores do bichinho moderno */ --card:#ffffff;
   --sel:#ffd95a; --seltx:#2d2250; --acc:#ff6fa5; --acctx:#ffffff;
   --d0:#58d68d; --d1:#ffd95a; --d2:#ff7b5c;
   --r:24px; --ri:16px; --rb:999px; --bw:3px;
