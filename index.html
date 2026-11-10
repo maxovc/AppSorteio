@@ -18,8 +18,26 @@
 <body>
 <main>
   <header>
-    <canvas id="pet" width="12" height="13" aria-hidden="true"></canvas>
-    <h1>Tama<span>Task</span></h1>
+    <canvas id="pet" width="96" height="108" aria-hidden="true"></canvas>
+    <h1>
+      <span class="logo-txt">Tama<span>Task</span></span>
+      <svg class="logo-svg" viewBox="0 0 244 74" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="lg" gradientUnits="userSpaceOnUse" x1="14" y1="0" x2="224" y2="0">
+            <stop offset="0" stop-color="#ff4fa3"/><stop offset=".2" stop-color="#ff8a3d"/>
+            <stop offset=".4" stop-color="#ffd23f"/><stop offset=".6" stop-color="#4fd67d"/>
+            <stop offset=".8" stop-color="#3fb7ff"/><stop offset="1" stop-color="#8a63ff"/>
+          </linearGradient>
+          <text id="lt" x="14" y="52" font-size="46" font-weight="900" textLength="210" lengthAdjust="spacingAndGlyphs"
+                font-family="ui-rounded, 'SF Pro Rounded', system-ui, -apple-system, sans-serif"><tspan>T</tspan><tspan dy="-3">a</tspan><tspan dy="4">m</tspan><tspan dy="-3">a</tspan><tspan dy="3">T</tspan><tspan dy="-3">a</tspan><tspan dy="3">s</tspan><tspan dy="-2">k</tspan></text>
+        </defs>
+        <use href="#lt" x="4" y="5" class="l-sombra"/>
+        <use href="#lt" class="l-out"/>
+        <use href="#lt" class="l-ring"/>
+        <use href="#lt" fill="url(#lg)"/>
+        <polygon class="l-star" points="232,6 235,14 243,17 235,20 232,28 229,20 221,17 229,14"/>
+      </svg>
+    </h1>
     <button id="tema" type="button" aria-label="Mudar o visual">Tema</button>
   </header>
   <nav id="tabs">
@@ -53,7 +71,7 @@
   </section>
 
   <section id="sorteio" hidden>
-    <canvas id="egg" width="16" height="16" aria-label="Ovo: toque para sortear"></canvas>
+    <canvas id="egg" width="160" height="160" aria-label="Ovo: toque para sortear"></canvas>
     <label>Quantas tarefas sortear
       <select id="qtd">
         <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>

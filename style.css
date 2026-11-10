@@ -29,11 +29,18 @@ body{min-height:100vh;min-height:100dvh;background-color:var(--bg);background-im
 main{max-width:560px;margin:0 auto;padding:16px}
 
 header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-#pet{width:60px;height:65px;image-rendering:pixelated;flex:none}
-h1{font:400 40px/1 TamaPixel,monospace;margin:0;color:var(--px);text-shadow:4px 4px 0 var(--mut)}
-h1 span{background:var(--px);color:var(--bg);padding:0 4px 0 6px;margin-left:4px;text-shadow:none}
-[data-tema="moderno"] h1{font:900 34px/1 var(--font);color:var(--acc);text-shadow:3px 3px 0 var(--px)}
-[data-tema="moderno"] h1 span{background:var(--sel);color:var(--px);border:var(--bw) solid var(--px);border-radius:12px;padding:2px 8px;margin-left:6px}
+#pet{image-rendering:pixelated;flex:none}
+h1{font:400 40px/1 TamaPixel,monospace;margin:0;color:var(--px);text-shadow:4px 4px 0 var(--mut);flex:1;min-width:0}
+h1 .logo-txt span{background:var(--px);color:var(--bg);padding:0 4px 0 6px;margin-left:4px;text-shadow:none}
+@media (max-width:420px){h1{font-size:30px}}
+/* Logo do visual moderno (SVG): contorno, anel branco e preenchimento em degradê */
+.logo-svg{display:none;width:100%;max-width:244px;height:auto}
+[data-tema="moderno"] h1{text-shadow:none}
+[data-tema="moderno"] .logo-svg{display:block}
+[data-tema="moderno"] .logo-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.l-sombra,.l-out{fill:var(--px);stroke:var(--px);stroke-width:12;stroke-linejoin:round}
+.l-ring{fill:#fff;stroke:#fff;stroke-width:6;stroke-linejoin:round}
+.l-star{fill:#ffd95a;stroke:var(--px);stroke-width:2;stroke-linejoin:round}
 #tema{margin-left:auto;align-self:flex-start;padding:6px 8px;font-size:10px;box-shadow:var(--sh2)}
 [data-tema="moderno"] #tema{font-size:12px}
 #tema:active{box-shadow:none}

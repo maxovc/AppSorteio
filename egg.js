@@ -2,56 +2,53 @@
 // Ovo de Tamagotchi: balança, racha, pisca a tela e "nasce" o bichinho do tema atual.
 (() => {
   const cv = document.getElementById('egg');
-  if (!cv) return;
+  if (!cv || !window.TAMA) return;
+  const T = window.TAMA;
   const ctx = cv.getContext('2d');
-  const OVO = [
-    '...####...', '..######..', '.########.', '.########.', '##########', '###.##.###',
-    '##########', '##########', '.##.##.##.', '.########.', '..######..', '...####...'
-  ];
-  const RACHA = [[5, 2], [4, 3], [5, 4], [4, 5], [5, 6], [6, 7], [5, 8], [6, 9]];
   const parado = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let rodando = false;
   let ultimo = () => ovo(0, 0);   // o que redesenhar ao trocar de tema
 
-  const limpar = () => ctx.clearRect(0, 0, 16, 16);
-  // Sprites do tema atual (clássico: um tom; moderno: paleta colorida)
-  function sprites() {
-    if (window.tamaModerno()) return { pet: window.TAMA_MODERNO.pet, ovo: window.TAMA_MODERNO.ovo, cores: window.tamaCores() };
-    return { pet: window.TAMA_SPRITE || [], ovo: OVO, cores: null };
+  // Configuração por tema: tamanho do ponto, grade, posição dos sprites, saltinho do bichinho
+  function cfg() {
+    if (T.mod()) return { m: true, cell: 10, g: 16, ox: 3, oy: 2, px: 2, py: 3, q: [-3, -1, -2, 0, -1, 0, 0, 0],
+                          pet: T.moderno.pet, ovo: T.moderno.ovo, racha: T.moderno.racha, cores: T.cores(),
+                          brilhos: [[0, 2], [15, 1], [1, 14], [14, 13]] };
+    return { m: false, cell: 5, g: 32, ox: 7, oy: 5, px: 4, py: 5, q: [-5, -2, -3, 0, -2, 0, 0, 0],
+             pet: T.classico.pet, ovo: T.classico.ovo, racha: T.classico.racha, cores: null,
+             brilhos: [[2, 4], [29, 3], [3, 27], [28, 25]] };
   }
-  function pintar(rows, x, y, cores) {
-    const cor = window.tamaCor();
-    rows.forEach((r, j) => [...r].forEach((c, i) => {
-      if (c === '.') return;
-      ctx.fillStyle = cores ? cores[c] : cor;
-      ctx.fillRect(x + i, y + j, 1, 1);
-    }));
+  function limpar(c) {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    if (!c.m) T.fantasma(ctx, c.g, c.g, c.cell);
   }
   function ovo(dx, rachaduras) {
-    const s = sprites();
-    limpar();
-    pintar(s.ovo, 3 + dx, 2, s.cores);
-    for (let i = 0; i < rachaduras; i++) {
-      const x = 3 + dx + RACHA[i][0], y = 2 + RACHA[i][1];
-      if (s.cores) { ctx.fillStyle = s.cores.k; ctx.fillRect(x, y, 1, 1); }   // moderno: rachadura escura
-      else ctx.clearRect(x, y, 1, 1);                                          // clássico: pixel apagado
+    const c = cfg();
+    limpar(c);
+    T.pintar(ctx, c.ovo, c.ox + dx, c.oy, c.cell, c.cores);
+    ctx.fillStyle = c.m ? c.cores.k : T.cor();           // rachaduras: pontos escuros
+    const gp = c.m ? 0 : 1;
+    for (let i = 0; i < rachaduras && i < c.racha.length; i++) {
+      ctx.fillRect((c.ox + dx + c.racha[i][0]) * c.cell, (c.oy + c.racha[i][1]) * c.cell, c.cell - gp, c.cell - gp);
     }
   }
+  function brilhar(c) {
+    ctx.fillStyle = c.m ? c.cores.p : T.cor();
+    const forma = c.m ? [[0, 0]] : [[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1]];   // clássico: "+" de 5 pontos
+    const gp = c.m ? 0 : 1;
+    c.brilhos.forEach(([x, y]) => forma.forEach(([dx, dy]) =>
+      ctx.fillRect((x + dx) * c.cell, (y + dy) * c.cell, c.cell - gp, c.cell - gp)));
+  }
   function nascer(pronto) {
-    const quique = [-3, -1, -2, 0, -1, 0, 0, 0];
-    const brilhos = [[0, 2], [15, 1], [1, 14], [14, 13]];
     let k = 0;
     const t = setInterval(() => {
-      const s = sprites();
-      limpar();
-      pintar(s.pet, 2, 3 + quique[k], s.cores);
-      if (k % 2 === 0) {
-        ctx.fillStyle = s.cores ? s.cores.p : window.tamaCor();
-        brilhos.forEach(([x, y]) => ctx.fillRect(x, y, 1, 1));
-      }
-      if (++k >= quique.length) {
+      const c = cfg();
+      limpar(c);
+      T.pintar(ctx, c.pet, c.px, c.py + c.q[k], c.cell, c.cores);
+      if (k % 2 === 0) brilhar(c);
+      if (++k >= c.q.length) {
         clearInterval(t); rodando = false;
-        ultimo = () => { const z = sprites(); limpar(); pintar(z.pet, 2, 3, z.cores); };
+        ultimo = () => { const z = cfg(); limpar(z); T.pintar(ctx, z.pet, z.px, z.py, z.cell, z.cores); };
         pronto();
       }
     }, 110);
