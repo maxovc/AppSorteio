@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; manifest-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F1EAFB">
+<meta name="theme-color" content="#c4cfa1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Sorteio">
@@ -16,7 +16,10 @@
 </head>
 <body>
 <main>
-  <h1>Sorteio de Tarefas</h1>
+  <header>
+    <canvas id="pet" width="12" height="13" aria-hidden="true"></canvas>
+    <h1>Sorteio de Tarefas</h1>
+  </header>
   <nav id="tabs">
     <button data-tab="nova" class="on">Nova</button>
     <button data-tab="backlog">Backlog <span id="cnt"></span></button>
@@ -56,11 +59,12 @@
         <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
       </select>
     </label>
-    <button id="sortear" class="primary">🎲 Sortear</button>
+    <button id="sortear" class="primary">Sortear</button>
     <p id="aviso" class="msg"></p>
     <ul id="sorteadas"></ul>
   </section>
 </main>
 <script src="app.js"></script>
+<script src="pet.js"></script>
 </body>
 </html>
