@@ -38,6 +38,7 @@ function salvar() {
 let tarefas = carregar();
 let sorteadas = [];
 let dif = 1;
+let revelar = false;
 
 function embaralhar(a) {
   a = a.slice();
@@ -75,7 +76,7 @@ function item(t, acoes) {
 
 function renderTudo() {
   const pend = tarefas.filter(t => !t.feita).sort((a, b) => b.criadaEm - a.criadaEm);
-  $('cnt').textContent = pend.length ? '(' + pend.length + ')' : '';
+  $('cnt').textContent = pend.length ? String(pend.length) : '';
   $('vazio').hidden = pend.length > 0;
   $('lista').replaceChildren(...pend.map(t => item(t, [{
     txt: 'Apagar',
@@ -86,14 +87,18 @@ function renderTudo() {
       salvar(); renderTudo();
     }
   }])));
-  $('sorteadas').replaceChildren(...sorteadas.map(t => item(t, [{
-    txt: 'Feita ✓',
-    fn: () => {
-      t.feita = true;
-      sorteadas = sorteadas.filter(x => x.id !== t.id);
-      salvar(); renderTudo();
-    }
-  }])));
+  $('sorteadas').replaceChildren(...sorteadas.map(t => {
+    const li = item(t, [{
+      txt: 'Feita ✓',
+      fn: () => {
+        t.feita = true;
+        sorteadas = sorteadas.filter(x => x.id !== t.id);
+        salvar(); renderTudo();
+      }
+    }]);
+    if (revelar) li.classList.add('novo');
+    return li;
+  }));
 }
 
 // Abas
@@ -128,12 +133,21 @@ $('add').addEventListener('click', () => {
   renderTudo();
 });
 
-// Sortear
+// Sortear (o ovo choca e revela as tarefas)
 $('sortear').addEventListener('click', () => {
   const pend = tarefas.filter(t => !t.feita);
-  sorteadas = embaralhar(pend).slice(0, Number($('qtd').value));
   $('aviso').textContent = pend.length ? '' : 'Seu backlog está vazio.';
+  if (!pend.length) return;
+  const resultado = embaralhar(pend).slice(0, Number($('qtd').value));
+  sorteadas = [];
   renderTudo();
+  $('sortear').disabled = true;
+  const mostrar = () => {
+    sorteadas = resultado;
+    revelar = true; renderTudo(); revelar = false;
+    $('sortear').disabled = false;
+  };
+  if (typeof window.chocar === 'function') window.chocar(mostrar); else mostrar();
 });
 
 // Backup: exportar

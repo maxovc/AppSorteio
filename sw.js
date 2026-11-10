@@ -1,7 +1,7 @@
 // Network-first: com internet, sempre pega a versão mais nova; sem internet, usa o cache.
-const CACHE = 'sorteio-v2';
-const ARQUIVOS = ['./', 'index.html', 'style.css', 'app.js', 'pet.js', 'manifest.webmanifest',
-                  'icon-180.png', 'icon-192.png', 'icon-512.png'];
+const CACHE = 'tamatask-v3';
+const ARQUIVOS = ['./', 'index.html', 'style.css', 'app.js', 'pet.js', 'egg.js', 'pixel.woff',
+                  'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARQUIVOS)).then(() => self.skipWaiting()));

@@ -18,6 +18,7 @@
     '..########..',
     '.##......##.'
   ];
+  window.TAMA_SPRITE = base;
   const frames = [
     { rows: base, dy: 0 },
     { rows: base.map((r, i) => (i === 4 ? '############' : r)), dy: 1 } // piscando

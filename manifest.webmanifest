@@ -1,6 +1,6 @@
 {
-  "name": "Sorteio de Tarefas",
-  "short_name": "Sorteio",
+  "name": "TamaTask",
+  "short_name": "TamaTask",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",
