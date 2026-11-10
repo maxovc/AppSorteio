@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; manifest-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F1EAFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sorteio">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="style.css">
+<title>Sorteio de Tarefas</title>
+</head>
+<body>
+<main>
+  <h1>Sorteio de Tarefas</h1>
+  <nav id="tabs">
+    <button data-tab="nova" class="on">Nova</button>
+    <button data-tab="backlog">Backlog <span id="cnt"></span></button>
+    <button data-tab="sorteio">Sortear</button>
+  </nav>
+
+  <section id="nova">
+    <label>Título
+      <input id="titulo" maxlength="120" autocomplete="off">
+    </label>
+    <label>Descrição
+      <textarea id="detalhes" rows="3" maxlength="1000"></textarea>
+    </label>
+    <div class="seg" id="dif">
+      <button data-d="0">Fácil</button>
+      <button data-d="1" class="on">Mediana</button>
+      <button data-d="2">Difícil</button>
+    </div>
+    <button id="add" class="primary">Adicionar ao backlog</button>
+    <p id="ok" class="msg"></p>
+  </section>
+
+  <section id="backlog" hidden>
+    <p id="vazio" class="msg">Backlog vazio. Adicione tarefas na aba Nova.</p>
+    <ul id="lista"></ul>
+    <div class="row">
+      <button id="exportar">Exportar backup</button>
+      <label class="btn">Importar backup
+        <input type="file" id="importar" accept="application/json,.json" hidden>
+      </label>
+    </div>
+  </section>
+
+  <section id="sorteio" hidden>
+    <label>Quantas tarefas sortear
+      <select id="qtd">
+        <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+      </select>
+    </label>
+    <button id="sortear" class="primary">🎲 Sortear</button>
+    <p id="aviso" class="msg"></p>
+    <ul id="sorteadas"></ul>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
