@@ -10,6 +10,7 @@
   --font:TamaPixel,"Courier New",monospace; --txt:"Courier New",ui-monospace,monospace; --fs:20px; --fw:400;
   --bgimg:linear-gradient(rgba(43,51,34,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(43,51,34,.07) 1px,transparent 1px);
   --bgsize:3px 3px;
+  --cartabg:var(--px); --cartatx:var(--bg); --cartasombra:0 0 0 3px var(--bg),0 0 0 6px var(--px); --tit:30px;
 }
 /* ===== VISUAL MODERNO (Tamagotchi colorido) — edite aqui ===== */
 [data-tema="moderno"]{
@@ -20,6 +21,7 @@
   --sh:0 5px 0 var(--px); --sh2:0 3px 0 var(--px); --shs:6px 6px 0 var(--px); --shp:translateY(5px);
   --font:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif; --txt:ui-rounded,"SF Pro Rounded",system-ui,sans-serif; --fs:17px; --fw:700;
   --bgimg:linear-gradient(160deg,#f1e8ff,#ffe9f4 55%,#e3f6ff); --bgsize:auto;
+  --cartabg:linear-gradient(135deg,#ffe27a,#ff9ccf); --cartatx:#2d2250; --cartasombra:0 6px 0 var(--px),0 0 0 6px rgba(255,217,90,.55); --tit:22px;
 }
 
 *{box-sizing:border-box}
@@ -94,11 +96,6 @@ ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12p
 /* Ovo / sorteio */
 #egg{display:block;margin:0 auto;width:166px;height:166px;image-rendering:pixelated;cursor:pointer;border:var(--bw) solid var(--px);border-radius:var(--r);background:var(--lcd)}
 #egg.flash{background:var(--px)}
-.novo{animation:surge .4s steps(4) both}
-.novo:nth-child(2){animation-delay:.3s}.novo:nth-child(3){animation-delay:.6s}
-.novo:nth-child(4){animation-delay:.9s}.novo:nth-child(5){animation-delay:1.2s}
-@keyframes surge{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.novo{animation:none}}
 
 /* Fogos de artifício (festa.js) */
 #festa{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50}
@@ -118,3 +115,27 @@ footer{margin-top:20px;text-align:center;color:var(--mut);opacity:.7;font-size:1
 @media (max-width:400px){[data-tema="classico"] .seg button{font-size:10px}}
 /* Moderno: botões de complexidade com cantos menos redondos e texto menor, para o texto não encostar nas bordas */
 [data-tema="moderno"] .seg button{border-radius:28px;font-size:15px;padding:10px 4px 12px}
+
+/* Tarefa sorteada em destaque */
+.carta{list-style:none;display:flex;flex-direction:column;gap:12px;padding:18px 16px;border:var(--bw) solid var(--px);border-radius:var(--r);background:var(--cartabg);color:var(--cartatx);box-shadow:var(--cartasombra);margin:6px 6px 8px;animation:cartaEntra .5s both}
+[data-tema="classico"] .carta{animation-timing-function:steps(6)}
+[data-tema="moderno"] .carta{animation-timing-function:cubic-bezier(.34,1.56,.64,1)}
+.faixa{font-size:10px;letter-spacing:.15em;opacity:.85}
+[data-tema="moderno"] .faixa{align-self:flex-start;background:var(--px);color:#ffd95a;border-radius:999px;padding:4px 12px;font-size:12px;letter-spacing:0;opacity:1}
+.tit{margin:0;font-size:var(--tit);line-height:1.15;font-weight:var(--fw);overflow-wrap:anywhere}
+[data-tema="moderno"] .tit{font-weight:800}
+.carta .base{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.carta small{font-size:10px;letter-spacing:.1em;color:inherit;opacity:.85}
+[data-tema="moderno"] .carta small{font-size:13px;letter-spacing:0;font-weight:700}
+.carta .base button{flex:none}
+.carta.rodando .base{visibility:hidden}
+.carta.rodando .tit{opacity:.75}
+.carta.pousou{animation:pouso .7s both}
+[data-tema="classico"] .carta.pousou{animation-timing-function:steps(7)}
+[data-tema="classico"] .pousou .faixa{animation:pisca .5s steps(2) 4}
+[data-tema="moderno"] .carta.pousou{animation:pouso .7s both,brilho 1.2s ease-in-out .7s 2}
+@keyframes cartaEntra{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes pouso{0%{transform:scale(1)}30%{transform:scale(1.07)}60%{transform:scale(.98)}100%{transform:scale(1)}}
+@keyframes pisca{50%{opacity:0}}
+@keyframes brilho{0%,100%{box-shadow:0 6px 0 var(--px),0 0 0 6px rgba(255,217,90,.35)}50%{box-shadow:0 6px 0 var(--px),0 0 0 12px rgba(255,217,90,.7)}}
+@media (prefers-reduced-motion:reduce){.carta,.carta.pousou,.pousou .faixa{animation:none!important}}

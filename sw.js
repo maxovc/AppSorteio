@@ -1,5 +1,5 @@
 // Network-first: com internet, sempre revalida e pega a versão mais nova (ignora o cache do navegador); sem internet, usa o cache.
-const CACHE = 'tamatask-v10';
+const CACHE = 'tamatask-v11';
 const ARQUIVOS = ['./', 'index.html', 'style.css', 'app.js', 'tema.js', 'pet.js', 'egg.js', 'festa.js', 'pixel.woff',
                   'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 

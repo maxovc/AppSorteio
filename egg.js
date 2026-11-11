@@ -65,6 +65,15 @@
     }, 130);
   };
 
+  // Volta ao ovo (com um pisca de tela, se o usuário estiver olhando)
+  window.voltarOvo = function (comPisca) {
+    if (rodando) return;
+    ultimo = () => ovo(0, 0);
+    if (!comPisca || parado) { ultimo(); return; }
+    cv.classList.add('flash');
+    setTimeout(() => { cv.classList.remove('flash'); if (!rodando) ultimo(); }, 140);
+  };
+
   cv.addEventListener('click', () => document.getElementById('sortear').click());
   window.addEventListener('tema', () => { if (!rodando) ultimo(); });
   ovo(0, 0);

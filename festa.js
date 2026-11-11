@@ -78,10 +78,17 @@
     else { rodando = false; antes = 0; ctx.clearRect(0, 0, innerWidth, innerHeight); }
   }
 
-  window.festa = function (x, y, ultima) {
+  window.festa = function (x, y, ultima, soBrilho) {
     garantir();
     const agora = performance.now();
     const em = (ms, fn) => agenda.push({ em: agora + ms, fn });
+    if (soBrilho) {   // só fagulhas, sem mensagem (usado quando a tarefa é sorteada)
+      explodir(x, y, 26);
+      em(170, () => explodir(x - 55, y - 20, 16));
+      em(260, () => explodir(x + 55, y - 20, 16));
+      if (!rodando) { rodando = true; requestAnimationFrame(quadro); }
+      return;
+    }
     explodir(x, y, 30);
     em(220, () => explodir(Math.max(20, x - 70 + Math.random() * 140), Math.max(20, y - 60 - Math.random() * 60), 26));
     texto(ultima ? 'Backlog zerado!' : MSG[(Math.random() * MSG.length) | 0], x, y - 20);

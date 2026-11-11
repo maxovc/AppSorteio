@@ -85,6 +85,45 @@ function item(t, acoes) {
   return li;
 }
 
+function marcarFeita(t, ev) {
+  const r = ev.currentTarget.getBoundingClientRect();   // posição do botão, antes de ele sumir
+  t.feita = true;
+  t.feitaEm = Date.now();
+  sorteadas = sorteadas.filter(x => x.id !== t.id);
+  salvar(); renderTudo();
+  const zerou = !tarefas.some(x => !x.feita);
+  if (typeof window.festa === 'function') window.festa(r.left + r.width / 2, r.top + r.height / 2, zerou);
+}
+
+// Cartão em destaque da tarefa sorteada
+function carta(t) {
+  const li = el('li', 'carta');
+  li.append(el('div', 'faixa', 'Tarefa sorteada!'));
+  li.append(el('p', 'tit', t.titulo));
+  const base = el('div', 'base');
+  const rotulo = el('small');
+  rotulo.append(el('span', 'ic-p', ICO_PIX[t.dificuldade]), el('span', 'ic-e', ICO_EMO[t.dificuldade]), NOMES[t.dificuldade]);
+  const b = el('button', '', 'Feita ✓');
+  b.addEventListener('click', ev => marcarFeita(t, ev));
+  base.append(rotulo, b);
+  li.append(base);
+  return li;
+}
+
+// "Roleta": o título troca rápido entre as tarefas e vai desacelerando até parar na sorteada
+function roleta(pend, alvo, fim) {
+  const outros = embaralhar(pend.filter(x => x.id !== alvo.id).map(x => x.titulo));
+  const atrasos = [55, 55, 60, 70, 90, 120, 170, 250, 360];
+  let i = 0;
+  (function passo() {
+    const c = document.querySelector('#sorteadas .carta');
+    if (!c || i >= atrasos.length) { fim(); return; }
+    c.querySelector('.faixa').textContent = 'Sorteando...';
+    c.querySelector('.tit').textContent = outros[i % outros.length];
+    setTimeout(passo, atrasos[i++]);
+  })();
+}
+
 function renderTudo() {
   const pend = tarefas.filter(t => !t.feita).sort((a, b) => b.criadaEm - a.criadaEm);
   const feitas = tarefas.filter(t => t.feita).sort((a, b) => b.feitaEm - a.feitaEm);
@@ -107,21 +146,10 @@ function renderTudo() {
   $('cntFeitas').textContent = feitas.length ? '(' + feitas.length + ')' : '';
   $('feitas').replaceChildren(...feitas.map(t => { const li = item(t, []); li.classList.add('feita'); return li; }));
 
-  // Tarefa sorteada
+  // Tarefa sorteada (cartão em destaque)
   $('sorteadas').replaceChildren(...sorteadas.map(t => {
-    const li = item(t, [{
-      txt: 'Feita ✓',
-      fn: ev => {
-        const r = ev.currentTarget.getBoundingClientRect();   // posição do botão, antes de ele sumir
-        t.feita = true;
-        t.feitaEm = Date.now();
-        sorteadas = sorteadas.filter(x => x.id !== t.id);
-        salvar(); renderTudo();
-        const zerou = !tarefas.some(x => !x.feita);
-        if (typeof window.festa === 'function') window.festa(r.left + r.width / 2, r.top + r.height / 2, zerou);
-      }
-    }]);
-    if (revelar) li.classList.add('novo');
+    const li = carta(t);
+    if (revelar) li.classList.add('rodando');
     return li;
   }));
 }
@@ -130,6 +158,7 @@ function renderTudo() {
 document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
   ABAS.forEach(id => { $(id).hidden = id !== b.dataset.tab; });
+  if (typeof window.voltarOvo === 'function') window.voltarOvo(false);
 }));
 
 // Complexidade
@@ -157,19 +186,41 @@ $('add').addEventListener('click', () => {
   renderTudo();
 });
 
-// Sortear: sempre uma tarefa (o ovo choca e revela)
+// Sortear: sempre uma tarefa (o ovo choca, a roleta gira e o cartão aparece em destaque)
+const reduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let timerOvo = null;
 $('sortear').addEventListener('click', () => {
   const pend = tarefas.filter(t => !t.feita);
   $('aviso').textContent = pend.length ? '' : 'Seu backlog está vazio.';
   if (!pend.length) return;
-  const resultado = embaralhar(pend).slice(0, 1);
+  clearTimeout(timerOvo);
+  const alvo = embaralhar(pend)[0];
   sorteadas = [];
   renderTudo();
   $('sortear').disabled = true;
+
   const mostrar = () => {
-    sorteadas = resultado;
+    sorteadas = [alvo];
     revelar = true; renderTudo(); revelar = false;
-    $('sortear').disabled = false;
+    const c = document.querySelector('#sorteadas .carta');
+    if (c && c.offsetParent !== null) c.scrollIntoView({ behavior: reduzido ? 'auto' : 'smooth', block: 'center' });
+
+    const fim = () => {
+      const cc = document.querySelector('#sorteadas .carta');
+      $('sortear').disabled = false;
+      if (!cc) return;
+      cc.classList.remove('rodando');
+      cc.classList.add('pousou');
+      cc.querySelector('.tit').textContent = alvo.titulo;
+      cc.querySelector('.faixa').textContent = 'Tarefa sorteada!';
+      if (cc.offsetParent !== null && typeof window.festa === 'function') {
+        const r = cc.getBoundingClientRect();
+        window.festa(r.left + r.width / 2, r.top + r.height / 2, false, true);   // brilho de "ta-da"
+      }
+      // depois de um instante, o bichinho volta a ser um ovo
+      timerOvo = setTimeout(() => { if (typeof window.voltarOvo === 'function') window.voltarOvo(true); }, 1800);
+    };
+    if (!c || reduzido || pend.length < 2) fim(); else roleta(pend, alvo, fim);
   };
   if (typeof window.chocar === 'function') window.chocar(mostrar); else mostrar();
 });
