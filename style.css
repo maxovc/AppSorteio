@@ -33,7 +33,7 @@ header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 h1{font:400 40px/1 TamaPixel,monospace;margin:0;color:var(--px);text-shadow:4px 4px 0 var(--mut);flex:1;min-width:0}
 h1 .logo-txt span{background:var(--px);color:var(--bg);padding:0 4px 0 6px;margin-left:4px;text-shadow:none}
 /* Logo do visual moderno (SVG): contorno, anel branco e preenchimento em degradê */
-.logo-svg{display:none;width:100%;max-width:244px;height:auto}
+.logo-svg{display:none;width:100%;max-width:270px;height:auto;overflow:visible}
 [data-tema="moderno"] h1{text-shadow:none}
 [data-tema="moderno"] .logo-svg{display:block}
 [data-tema="moderno"] .logo-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -115,4 +115,6 @@ ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12p
 .item.feita strong{text-decoration:line-through}
 footer{margin-top:20px;text-align:center;color:var(--mut);opacity:.7;font-size:10px;letter-spacing:.1em}
 [data-tema="moderno"] footer{font-size:12px;letter-spacing:0;font-weight:600}
-@media (max-width:380px){[data-tema="classico"] .seg button{font-size:10px}}
+@media (max-width:400px){[data-tema="classico"] .seg button{font-size:10px}}
+/* Moderno: botões de complexidade com cantos menos redondos e texto menor, para o texto não encostar nas bordas */
+[data-tema="moderno"] .seg button{border-radius:28px;font-size:15px;padding:10px 4px 12px}
