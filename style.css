@@ -32,7 +32,6 @@ header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 #pet{image-rendering:pixelated;flex:none}
 h1{font:400 40px/1 TamaPixel,monospace;margin:0;color:var(--px);text-shadow:4px 4px 0 var(--mut);flex:1;min-width:0}
 h1 .logo-txt span{background:var(--px);color:var(--bg);padding:0 4px 0 6px;margin-left:4px;text-shadow:none}
-@media (max-width:420px){h1{font-size:30px}}
 /* Logo do visual moderno (SVG): contorno, anel branco e preenchimento em degradê */
 .logo-svg{display:none;width:100%;max-width:244px;height:auto}
 [data-tema="moderno"] h1{text-shadow:none}
@@ -41,11 +40,12 @@ h1 .logo-txt span{background:var(--px);color:var(--bg);padding:0 4px 0 6px;margi
 .l-sombra,.l-out{fill:var(--px);stroke:var(--px);stroke-width:12;stroke-linejoin:round}
 .l-ring{fill:#fff;stroke:#fff;stroke-width:6;stroke-linejoin:round}
 .l-star{fill:#ffd95a;stroke:var(--px);stroke-width:2;stroke-linejoin:round}
-#tema{margin-left:auto;align-self:flex-start;padding:6px 8px;font-size:10px;box-shadow:var(--sh2)}
-[data-tema="moderno"] #tema{font-size:12px}
+#tema{padding:6px 10px;font-size:10px;box-shadow:var(--sh2)}
+[data-tema="moderno"] #tema{font-size:13px}
 #tema:active{box-shadow:none}
 
-#tabs{display:flex;gap:8px;margin-bottom:16px}
+.barra{display:flex;gap:8px;margin-bottom:16px}
+#tabs{display:flex;gap:8px;flex:1;min-width:0}
 #tabs button{flex:1;padding:12px 2px}
 #cnt{font-size:10px;margin-left:4px;vertical-align:top}
 [data-tema="moderno"] #cnt{font-size:12px}
@@ -65,7 +65,7 @@ input,textarea,select{font:16px/1.35 var(--txt);color:var(--px);background:var(-
 input:focus,select:focus,button:focus-visible{outline:3px dashed var(--px);outline-offset:2px}
 
 .seg{display:flex;gap:8px}
-.seg button{flex:1;padding:10px 2px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.seg button{flex:1;padding:10px 0;display:flex;flex-direction:column;align-items:center;gap:6px}
 
 ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
 .item{display:flex;gap:12px;align-items:center;justify-content:space-between;border:var(--bw) solid var(--px);border-radius:var(--ri);background:var(--lcd);padding:12px}
@@ -99,3 +99,20 @@ ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12p
 .novo:nth-child(4){animation-delay:.9s}.novo:nth-child(5){animation-delay:1.2s}
 @keyframes surge{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.novo{animation:none}}
+
+/* Fogos de artifício (festa.js) */
+#festa{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50}
+
+/* Estrutura nova: complexidade, divisórias, concluídas, rodapé */
+.grupo{display:flex;flex-direction:column;gap:8px}
+.dica{margin:0;color:var(--mut);font-size:10px;letter-spacing:.1em}
+[data-tema="moderno"] .dica{font-size:13px;letter-spacing:0}
+.div{border:0;border-top:var(--bw) dashed var(--px);height:0;width:100%;margin:4px 0;opacity:.55}
+[data-tema="moderno"] .div{border-top-style:dotted;border-color:var(--mut);opacity:1}
+.sub{font:inherit;font-weight:var(--fw);margin:0}
+#blocoFeitas{display:flex;flex-direction:column;gap:12px}
+.item.feita{opacity:.6;background:transparent}
+.item.feita strong{text-decoration:line-through}
+footer{margin-top:20px;text-align:center;color:var(--mut);opacity:.7;font-size:10px;letter-spacing:.1em}
+[data-tema="moderno"] footer{font-size:12px;letter-spacing:0;font-weight:600}
+@media (max-width:380px){[data-tema="classico"] .seg button{font-size:10px}}

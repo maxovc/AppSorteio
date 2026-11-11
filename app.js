@@ -1,9 +1,10 @@
 'use strict';
 
 const KEY = 'sorteio.v1';
-const NOMES = ['Fácil', 'Mediana', 'Difícil'];
-const ICO_PIX = ['\uE000', '\uE001', '\uE002'];   // ícones da fonte pixel
+const NOMES = ['Fácil', 'Moderada', 'Difícil'];
+const ICO_PIX = ['\uE000', '\uE001', '\uE002'];   // ícones da fonte pixel (visual clássico)
 const ICO_EMO = ['🌱', '⚡', '🔥'];               // visual moderno
+const ABAS = ['inicio', 'backlog'];
 const $ = id => document.getElementById(id);
 
 const novoId = () =>
@@ -15,13 +16,18 @@ function limpar(arr) {
   return arr
     .slice(0, 5000)
     .filter(t => t && typeof t.titulo === 'string' && t.titulo.trim())
-    .map(t => ({
-      id: typeof t.id === 'string' && t.id ? t.id.slice(0, 60) : novoId(),
-      titulo: t.titulo.trim().slice(0, 200),
-      dificuldade: [0, 1, 2].includes(t.dificuldade) ? t.dificuldade : 1,
-      feita: t.feita === true,
-      criadaEm: Number.isFinite(t.criadaEm) ? t.criadaEm : Date.now()
-    }));
+    .map(t => {
+      const feita = t.feita === true;
+      const criadaEm = Number.isFinite(t.criadaEm) ? t.criadaEm : Date.now();
+      return {
+        id: typeof t.id === 'string' && t.id ? t.id.slice(0, 60) : novoId(),
+        titulo: t.titulo.trim().slice(0, 200),
+        dificuldade: [0, 1, 2].includes(t.dificuldade) ? t.dificuldade : 1,
+        feita,
+        criadaEm,
+        feitaEm: feita ? (Number.isFinite(t.feitaEm) ? t.feitaEm : criadaEm) : 0
+      };
+    });
 }
 
 function carregar() {
@@ -37,7 +43,7 @@ function salvar() {
 }
 
 let tarefas = carregar();
-let sorteadas = [];
+let sorteadas = [];   // sempre 0 ou 1 tarefa
 let dif = 1;
 let revelar = false;
 
@@ -63,23 +69,29 @@ function item(t, acoes) {
   const info = el('div', 'info');
   info.append(el('strong', '', t.titulo));
   const rotulo = el('small');
-  rotulo.append(el('span', 'ic-p', ICO_PIX[t.dificuldade]), el('span', 'ic-e', ICO_EMO[t.dificuldade]), NOMES[t.dificuldade]);
+  rotulo.append(el('span', 'ic-p', ICO_PIX[t.dificuldade]), el('span', 'ic-e', ICO_EMO[t.dificuldade]),
+                NOMES[t.dificuldade] + (t.feita ? ' ✓' : ''));
   info.append(rotulo);
   li.append(info);
-  const box = el('div', 'acoes');
-  acoes.forEach(a => {
-    const b = el('button', '', a.txt);
-    b.addEventListener('click', a.fn);
-    box.append(b);
-  });
-  li.append(box);
+  if (acoes.length) {
+    const box = el('div', 'acoes');
+    acoes.forEach(a => {
+      const b = el('button', '', a.txt);
+      b.addEventListener('click', a.fn);
+      box.append(b);
+    });
+    li.append(box);
+  }
   return li;
 }
 
 function renderTudo() {
   const pend = tarefas.filter(t => !t.feita).sort((a, b) => b.criadaEm - a.criadaEm);
+  const feitas = tarefas.filter(t => t.feita).sort((a, b) => b.feitaEm - a.feitaEm);
+
   $('cnt').textContent = pend.length ? String(pend.length) : '';
   $('vazio').hidden = pend.length > 0;
+  $('vazio').textContent = feitas.length ? 'Nenhuma tarefa pendente.' : 'Backlog vazio. Adicione tarefas na aba Início.';
   $('lista').replaceChildren(...pend.map(t => item(t, [{
     txt: 'Apagar',
     fn: () => {
@@ -89,13 +101,24 @@ function renderTudo() {
       salvar(); renderTudo();
     }
   }])));
+
+  // Concluídas: continuam na lista, separadas e com aparência apagada
+  $('blocoFeitas').hidden = feitas.length === 0;
+  $('cntFeitas').textContent = feitas.length ? '(' + feitas.length + ')' : '';
+  $('feitas').replaceChildren(...feitas.map(t => { const li = item(t, []); li.classList.add('feita'); return li; }));
+
+  // Tarefa sorteada
   $('sorteadas').replaceChildren(...sorteadas.map(t => {
     const li = item(t, [{
       txt: 'Feita ✓',
-      fn: () => {
+      fn: ev => {
+        const r = ev.currentTarget.getBoundingClientRect();   // posição do botão, antes de ele sumir
         t.feita = true;
+        t.feitaEm = Date.now();
         sorteadas = sorteadas.filter(x => x.id !== t.id);
         salvar(); renderTudo();
+        const zerou = !tarefas.some(x => !x.feita);
+        if (typeof window.festa === 'function') window.festa(r.left + r.width / 2, r.top + r.height / 2, zerou);
       }
     }]);
     if (revelar) li.classList.add('novo');
@@ -106,10 +129,10 @@ function renderTudo() {
 // Abas
 document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
-  ['nova', 'backlog', 'sorteio'].forEach(id => { $(id).hidden = id !== b.dataset.tab; });
+  ABAS.forEach(id => { $(id).hidden = id !== b.dataset.tab; });
 }));
 
-// Dificuldade
+// Complexidade
 document.querySelectorAll('#dif button').forEach(b => b.addEventListener('click', () => {
   dif = Number(b.dataset.d);
   document.querySelectorAll('#dif button').forEach(x => x.classList.toggle('on', x === b));
@@ -124,7 +147,8 @@ $('add').addEventListener('click', () => {
     titulo: titulo.slice(0, 200),
     dificuldade: dif,
     feita: false,
-    criadaEm: Date.now()
+    criadaEm: Date.now(),
+    feitaEm: 0
   });
   salvar();
   $('titulo').value = '';
@@ -133,12 +157,12 @@ $('add').addEventListener('click', () => {
   renderTudo();
 });
 
-// Sortear (o ovo choca e revela as tarefas)
+// Sortear: sempre uma tarefa (o ovo choca e revela)
 $('sortear').addEventListener('click', () => {
   const pend = tarefas.filter(t => !t.feita);
   $('aviso').textContent = pend.length ? '' : 'Seu backlog está vazio.';
   if (!pend.length) return;
-  const resultado = embaralhar(pend).slice(0, Number($('qtd').value));
+  const resultado = embaralhar(pend).slice(0, 1);
   sorteadas = [];
   renderTudo();
   $('sortear').disabled = true;
@@ -148,6 +172,14 @@ $('sortear').addEventListener('click', () => {
     $('sortear').disabled = false;
   };
   if (typeof window.chocar === 'function') window.chocar(mostrar); else mostrar();
+});
+
+// Limpar concluídas
+$('limpar').addEventListener('click', () => {
+  const n = tarefas.filter(t => t.feita).length;
+  if (!n || !confirm('Apagar ' + n + ' tarefa(s) concluída(s)?')) return;
+  tarefas = tarefas.filter(t => !t.feita);
+  salvar(); renderTudo();
 });
 
 // Backup: exportar
